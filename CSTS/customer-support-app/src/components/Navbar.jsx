@@ -34,12 +34,14 @@ function Navbar() {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-3">
-      <div className="container-fluid">
-        <Link className="navbar-brand fw-bold" to="/">CSTS</Link>
+    <nav className="navbar navbar-expand-lg navbar-dark shadow-sm py-3" style={{ background: 'linear-gradient(90deg, #1e3c72 0%, #2a5298 100%)' }}>
+      <div className="container">
+        <Link className="navbar-brand fw-bold fs-4 d-flex align-items-center" to="/">
+          <i className="fas fa-headset me-2"></i> CSTS
+        </Link>
 
         <button
-          className="navbar-toggler"
+          className="navbar-toggler border-0"
           type="button"
           data-bs-toggle="collapse"
           data-bs-target="#navbarNav"
@@ -48,14 +50,14 @@ function Navbar() {
         </button>
 
         <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
-          <ul className="navbar-nav align-items-center">
+          <ul className="navbar-nav align-items-center gap-2">
             {!role && (
               <>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/login">Login</Link>
+                  <Link className="nav-link px-3 text-white" to="/login">Login</Link>
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/register">Register</Link>
+                  <Link className="btn btn-light rounded-pill px-4 fw-bold text-primary" to="/register">Register</Link>
                 </li>
               </>
             )}
@@ -63,10 +65,10 @@ function Navbar() {
             {role === 'Admin' && (
               <>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/admin/dashboard">Dashboard</Link>
+                  <Link className="nav-link text-white" to="/admin/dashboard">Dashboard</Link>
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/admin/tickets">All Tickets</Link>
+                  <Link className="nav-link text-white" to="/admin/tickets">All Tickets</Link>
                 </li>
               </>
             )}
@@ -74,10 +76,10 @@ function Navbar() {
             {role === 'Agent' && (
               <>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/agent/dashboard">Dashboard</Link>
+                  <Link className="nav-link text-white" to="/agent/dashboard">Dashboard</Link>
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/agent/resolved">Resolved Tickets</Link>
+                  <Link className="nav-link text-white" to="/agent/resolved">Resolved Tickets</Link>
                 </li>
               </>
             )}
@@ -85,10 +87,10 @@ function Navbar() {
             {role === 'Customer' && (
               <>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/customer/dashboard">Dashboard</Link>
+                  <Link className="nav-link text-white" to="/customer/dashboard">Dashboard</Link>
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/customer/search">Search Tickets</Link>
+                  <Link className="nav-link text-white" to="/customer/search">Search Tickets</Link>
                 </li>
               </>
             )}
@@ -96,7 +98,7 @@ function Navbar() {
             {role && (
               <li className="nav-item">
                 <button
-                  className="btn btn-outline-light btn-sm ms-3"
+                  className="btn btn-outline-light btn-sm ms-3 rounded-pill px-3"
                   onClick={handleLogout}
                 >
                   Logout

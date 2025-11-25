@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { getAllTickets, assignTicket } from "../../services/api";
 import { useParams, useNavigate } from "react-router-dom";
@@ -24,7 +25,7 @@ function AssignTicketsPage() {
 
     const res = await assignTicket({ ticketId, assignedTo: parseInt(agentId) });
     if (res) {
-      alert("✅ Ticket assigned successfully!");
+      alert("Ticket assigned successfully!");
       const all = await getAllTickets();
       setTickets(all || []);
     }
@@ -38,56 +39,112 @@ function AssignTicketsPage() {
 
   return (
     <div className="container mt-4">
-      <h3>Assign Tickets to Agent (ID: {agentId})</h3>
+      <div className="card border rounded-3 overflow-hidden">
+        <div className="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+          <h4 className="mb-0 fw-bold text-primary">
+            Assign Tickets to <span className="text-dark">Agent {agentId}</span>
+          </h4>
+          <div className="d-flex">
+            <input
+              type="text"
+              className="form-control me-2"
+              placeholder="Search tickets..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            <button className="btn btn-outline-secondary" onClick={() => navigate(-1)}>
+              Back
+            </button>
+          </div>
+        </div>
 
-      <div className="d-flex mb-3">
-        <input
-          type="text"
-          className="form-control me-2"
-          placeholder="Search tickets by title..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <button className="btn btn-secondary" onClick={() => navigate(-1)}>
-          Back
-        </button>
+        <div className="card-body p-0">
+          {filtered.length === 0 ? (
+            <div className="text-center py-5 text-muted">
+              No tickets found matching "{search}"
+            </div>
+          ) : (
+            <div className="table-responsive">
+              <table className="table table-hover align-middle mb-0">
+                <thead className="bg-dark text-white">
+                  <tr>
+                    <th className="py-3 ps-4">Title</th>
+                    <th className="py-3">Description</th>
+                    <th className="py-3">Priority</th>
+                    <th className="py-3">Status</th>
+                    <th className="py-3">Assigned To</th>
+                    <th className="py-3 text-end pe-4">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.map((t) => (
+                    <tr key={t.ticketId}>
+                      <td className="fw-medium text-dark ps-4">{t.title}</td>
+                      <td className="text-muted small text-truncate" style={{ maxWidth: "200px" }}>
+                        {t.description}
+                      </td>
+                      <td>
+                        <span
+                          className={`badge rounded-pill px-3 py-2 ${
+                            t.priority === "High"
+                              ? "bg-danger-subtle text-danger border border-danger"
+                              : t.priority === "Medium"
+                              ? "bg-warning-subtle text-warning-emphasis border border-warning"
+                              : "bg-success-subtle text-success border border-success"
+                          }`}
+                        >
+                          {t.priority}
+                        </span>
+                      </td>
+                      <td>
+                        <span
+                          className={`badge rounded-pill px-3 py-2 ${
+                            t.status === "Resolved"
+                              ? "bg-success-subtle text-success border border-success"
+                              : t.status === "Open"
+                              ? "bg-primary-subtle text-primary border border-primary"
+                              : "bg-secondary-subtle text-secondary border border-secondary"
+                          }`}
+                        >
+                          {t.status}
+                        </span>
+                      </td>
+                      <td>
+                        {t.assignedToName ? (
+                          <span className="fw-medium text-dark">{t.assignedToName}</span>
+                        ) : (
+                          <span className="text-muted fst-italic">Unassigned</span>
+                        )}
+                      </td>
+                      <td className="text-end pe-4">
+                        <button
+                          className={`btn btn-sm ${
+                            t.assignedTo === parseInt(agentId) || t.status === "Resolved"
+                              ? "btn-secondary"
+                              : "btn-success"
+                          }`}
+                          onClick={() => handleAssign(t.ticketId)}
+                          disabled={
+                            t.assignedTo === parseInt(agentId) || t.status === "Resolved"
+                          }
+                        >
+                          {t.status === "Resolved"
+                            ? "Resolved"
+                            : t.assignedTo === parseInt(agentId)
+                            ? "Assigned"
+                            : t.assignedTo
+                            ? "Reassign"
+                            : "Assign"}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
       </div>
-
-      {filtered.length === 0 ? (
-        <div className="alert alert-info">No tickets found.</div>
-      ) : (
-        <table className="table table-bordered table-hover">
-          <thead className="table-dark">
-            <tr>
-              <th>Title</th>
-              <th>Description</th>
-              <th>Priority</th>
-              <th>Status</th>
-              <th>Assigned To</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((t) => (
-              <tr key={t.ticketId}>
-                <td>{t.title}</td>
-                <td>{t.description}</td>
-                <td>{t.priority}</td>
-                <td>{t.status}</td>
-                <td>{t.assignedTo || "Unassigned"}</td>
-                <td>
-                  <button
-                    className="btn btn-success btn-sm"
-                    onClick={() => handleAssign(t.ticketId)}
-                  >
-                    Assign
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
     </div>
   );
 }

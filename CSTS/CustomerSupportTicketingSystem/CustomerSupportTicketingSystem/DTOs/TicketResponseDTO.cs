@@ -9,6 +9,7 @@
         public string Status { get; set; }
         public int CreatedBy { get; set; }
         public int? AssignedTo { get; set; }
+        public string AssignedToName { get; set; }
         public DateTime CreatedDate { get; set; }
     }
 }

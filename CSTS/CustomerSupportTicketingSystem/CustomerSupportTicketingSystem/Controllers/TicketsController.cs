@@ -64,6 +64,7 @@ namespace CustomerSupportTicketingSystem.Controllers
                 Status = t.Status.ToString(),
                 CreatedBy = t.CreatedBy,
                 AssignedTo = t.AssignedTo,
+                AssignedToName = t.AssignedToUser != null ? t.AssignedToUser.Name : null,
                 CreatedDate = t.CreatedDate
             });
             return Ok(result);

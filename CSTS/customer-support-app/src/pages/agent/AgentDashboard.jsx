@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { toast } from 'react-hot-toast';
 import { apiFetch } from '../../services/api';
 
 function AgentDashboard() {
@@ -24,7 +25,7 @@ function AgentDashboard() {
 
   const handleResolve = async (ticketId) => {
     await apiFetch(`/tickets/${ticketId}/resolve`, 'PUT', null, true);
-    alert('✅ Ticket marked as Resolved!');
+    toast.success('Ticket marked as Resolved!');
     fetchTickets();
   };
 

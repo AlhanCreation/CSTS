@@ -5,16 +5,16 @@ export async function apiFetch(endpoint, method = 'GET', body = null, auth = fal
   const headers = {};
   if (!isForm) headers['Content-Type'] = 'application/json';
 
-  // ✅ Attach Bearer Token if required
+  // Attach Bearer Token if required
   if (auth) {
     const token = localStorage.getItem('token');
-    console.log("🔑 Token in storage:", token);
+    console.log("Token in storage:", token);
     if (token) headers['Authorization'] = `Bearer ${token}`;
   }
 
   try {
     const url = `${API}${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;
-    console.log("🌐 Fetching:", url);
+    console.log("Fetching:", url);
 
     const res = await fetch(url, {
       method,
@@ -40,20 +40,20 @@ export async function apiFetch(endpoint, method = 'GET', body = null, auth = fal
 
     return await res.json();
   } catch (err) {
-    console.error("🚨 Fetch failed:", err);
-    return null;
+    console.error("Fetch failed:", err);
+    throw err;
   }
 }
 
-// ✅ AUTH
+// Auth
 export const register = (data) => apiFetch('/auth/register', 'POST', data);
 export const login = (data) => apiFetch('/auth/login', 'POST', data);
 
-// ✅ USERS
+// Users
 export const getAllAgents = () => apiFetch('/users/agents', 'GET', null, true);
 export const logoutUser = () => apiFetch('/users/logout', 'POST', null, true);
 
-// ✅ TICKETS
+// Tickets
 export const createTicket = (data) => apiFetch('/tickets', 'POST', data, true);
 export const getAllTickets = () => apiFetch('/tickets', 'GET', null, true);
 export const getTicketById = (id) => apiFetch(`/tickets/${id}`, 'GET', null, true);
@@ -63,13 +63,13 @@ export const updateTicketStatus = (id, status) =>
 export const deleteTicket = (id) =>
   apiFetch(`/tickets/${id}`, 'DELETE', null, true);
 
-// ✅ COMMENTS
+// Comments
 export const addComment = (ticketId, data) =>
   apiFetch(`/comments`, 'POST', data, true);
 export const getComments = (ticketId) =>
   apiFetch(`/comments/${ticketId}`, 'GET', null, true);
 
-// ✅ EXTRA (Admin & Agent Tools)
+// Extra (Admin & Agent Tools)
 export const getUnassignedTickets = () =>
   apiFetch('/tickets', 'GET', null, true).then((data) =>
     data ? data.filter((t) => !t.assignedTo) : []

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { toast } from 'react-hot-toast';
 import { createTicket, getAllTickets, apiFetch } from '../../services/api';
 
 function CustomerDashboard() {
@@ -24,13 +25,13 @@ function CustomerDashboard() {
     e.preventDefault();
 
     if (!newTicket.title.trim() || !newTicket.description.trim()) {
-      alert('Please fill in all fields');
+      toast.error('Please fill in all fields');
       return;
     }
 
     const res = await createTicket(newTicket);
     if (res) {
-      alert('Ticket created successfully!');
+      toast.success('Ticket created successfully!');
       setNewTicket({ title: '', description: '', priority: 'Low' });
       fetchTickets();
     }
@@ -41,7 +42,7 @@ function CustomerDashboard() {
     if (!confirmClose) return;
 
     await apiFetch(`/tickets/${ticketId}/close`, 'PUT', null, true);
-    alert('✅ Ticket closed successfully!');
+    toast.success('Ticket closed successfully!');
     fetchTickets();
   };
 

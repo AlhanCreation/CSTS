@@ -1,8 +1,11 @@
 import React from 'react';
+import { toast } from 'react-hot-toast';
 import useFormValidation from '../hooks/useFormValidation';
+import { useNavigate } from 'react-router-dom';
 import { apiFetch } from '../services/api';
 
 function Register() {
+  const navigate = useNavigate();
   const validate = (values) => {
     const errors = {};
     if (!values.name.trim()) errors.name = 'Name required';
@@ -38,15 +41,14 @@ function Register() {
       console.log('Register response:', res);
 
       if (res && res.success) {
-        alert('Registration successful!');
+        toast.success('Registration successful!');
       } else if (res && res.message) {
-        alert(`${res.message}`);
-      } else {
-        alert('Registration failed, please try again.');
+        toast.success(res.message);
+        navigate('/login');
       }
     } catch (err) {
       console.error('Register error:', err);
-      alert('Error occurred while registering');
+      toast.error(err.message || 'Error occurred while registering');
     }
   };
 

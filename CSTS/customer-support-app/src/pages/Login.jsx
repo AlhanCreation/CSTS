@@ -1,4 +1,5 @@
 import React from 'react';
+import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import useFormValidation from '../hooks/useFormValidation';
 import { apiFetch } from '../services/api';
@@ -41,6 +42,7 @@ function Login() {
         localStorage.setItem('userId', res.user.userId);
 
         window.dispatchEvent(new Event('storage'));
+        toast.success('Login successful!');
 
         switch (res.user.role) {
           case 'Admin':
@@ -55,12 +57,10 @@ function Login() {
           default:
             navigate('/');
         }
-      } else {
-        alert('Invalid credentials');
       }
     } catch (err) {
       console.error('Login error:', err);
-      alert('Error occurred while logging in');
+      toast.error(err.message || 'Error occurred while logging in');
     }
   };
 

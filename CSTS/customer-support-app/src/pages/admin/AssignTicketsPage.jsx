@@ -1,5 +1,6 @@
 
 import { useEffect, useState } from "react";
+import { toast } from 'react-hot-toast';
 import { getAllTickets, assignTicket } from "../../services/api";
 import { useParams, useNavigate } from "react-router-dom";
 
@@ -9,6 +10,8 @@ function AssignTicketsPage() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  
+
 
   useEffect(() => {
     const fetchTickets = async () => {
@@ -23,17 +26,21 @@ function AssignTicketsPage() {
     const confirm = window.confirm("Are you sure you want to assign this ticket?");
     if (!confirm) return;
 
-    const res = await assignTicket({ ticketId, assignedTo: parseInt(agentId) });
-    if (res) {
-      alert("Ticket assigned successfully!");
-      const all = await getAllTickets();
-      setTickets(all || []);
+    try {
+      const res = await assignTicket({ ticketId, assignedTo: parseInt(agentId) });
+      if (res) {
+        toast.success("Ticket assigned successfully!");
+        setTickets((prev) =>
+          prev.map((t) => (t.ticketId === ticketId ? res : t))
+        );
+      }
+    } catch (err) {
+      console.error("Assign error:", err);
+      toast.error(err.message || "Failed to assign ticket");
     }
   };
 
-  const filtered = tickets.filter((t) =>
-    t.title.toLowerCase().includes(search.toLowerCase())
-  );
+
 
   if (loading) return <p>Loading tickets...</p>;
 
@@ -59,7 +66,7 @@ function AssignTicketsPage() {
         </div>
 
         <div className="card-body p-0">
-          {filtered.length === 0 ? (
+          {tickets.filter((t) => t.title.toLowerCase().includes(search.toLowerCase())).length === 0 ? (
             <div className="text-center py-5 text-muted">
               No tickets found matching "{search}"
             </div>
@@ -77,7 +84,7 @@ function AssignTicketsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {filtered.map((t) => (
+                  {tickets.filter((t) => t.title.toLowerCase().includes(search.toLowerCase())).map((t) => (
                     <tr key={t.ticketId}>
                       <td className="fw-medium text-dark ps-4">{t.title}</td>
                       <td className="text-muted small text-truncate" style={{ maxWidth: "200px" }}>
